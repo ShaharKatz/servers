@@ -494,7 +494,8 @@ async function runServer() {
   // const transport = new StdioServerTransport();
   // const transport = new StreamableHTTPServerTransport({ port: 4002 });
   const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: () => "123" });
-  await server.connect(transport);
+  // await server.connect(transport);
+  await server.serve(transport);
 }
 
 runServer().catch(console.error);
