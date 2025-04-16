@@ -71,6 +71,44 @@ Here's the Claude Desktop configuration to use the Puppeter server:
 
 ### Docker
 
+Shahar - I've ran: 
+0. noticed http isn't available in the public sdk ts package
+1. cloned the typescript-sdk to my mac
+2. created a link in the typescript sdk repository: 
+```
+npm run build
+npm link
+```
+3. created a local link in the puppeteer project: 
+```
+npm link @modelcontextprotocol/sdk
+```
+4. ran a npm install and run build to compile the local sdk in the project: 
+```
+npm install
+npm run build
+```
+5. added to copy that dist to the docker image: 
+```
+COPY ../../../typescript-sdk /typescript-sdk
+WORKDIR /project
+RUN npm install --legacy-peer-deps
+```
+
+OLD - scatch the above, i created a package 
+```
+npm pack
+```
+
+and copied it to the servers location and then added to the dockerfile: 
+```
+COPY modelcontextprotocol-sdk-1.10.0.tgz /project/tmp/sdk.tgz
+```
+
+```
+docker run -i --rm --init -e PORT=4002 -e DOCKER_CONTAINER=true -p 4002:4002 --name puppeteer-test mcp/puppeteer
+```
+
 **NOTE** The docker implementation will use headless chromium, where as the NPX version will open a browser window.
 
 ```json
