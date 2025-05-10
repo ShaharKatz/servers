@@ -18,9 +18,13 @@ RUN apt-get update && \
 
 COPY src/puppeteer /project
 COPY tsconfig.json /tsconfig.json
+# COPY typescript-sdk /project/typescript-sdk
+# COPY src/puppeteer/modelcontextprotocol-sdk-0.1.0.tgz /project/tmp/sdk.tgz
+COPY modelcontextprotocol-sdk-1.10.0.tgz /project/tmp/sdk.tgz
+
 
 WORKDIR /project
 
-RUN npm install
+RUN npm install /project/tmp/sdk.tgz
 
 ENTRYPOINT ["node", "dist/index.js"]

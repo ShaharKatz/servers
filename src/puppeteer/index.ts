@@ -2,6 +2,22 @@
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+// import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/StreamableHTTPServerTransport";
+// import { StreamableHttpServerTransport } from "../../../../typescript-sdk/src/server/streamableHttp.ts";
+// import { StreamableHTTPServerTransport } from "../../../typescript-sdk/src/server/streamableHttp.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+
+
+// import {
+//   CallToolRequestSchema,
+//   ListResourcesRequestSchema,
+//   ListToolsRequestSchema,
+//   ReadResourceRequestSchema,
+//   CallToolResult,
+//   TextContent,
+//   ImageContent,
+//   Tool,
+// } from "@modelcontextprotocol/sdk/types.js";
 import {
   CallToolRequestSchema,
   ListResourcesRequestSchema,
@@ -110,6 +126,7 @@ const screenshots = new Map<string, string>();
 let previousLaunchOptions: any = null;
 
 async function ensureBrowser({ launchOptions, allowDangerous }: any) {
+  console.log("Ensuring browser");
 
   const DANGEROUS_ARGS = [
     '--no-sandbox',
@@ -213,6 +230,7 @@ declare global {
 
 async function handleToolCall(name: string, args: any): Promise<CallToolResult> {
   const page = await ensureBrowser(args);
+  console.log("Handling tool call: " + name + " with args: " + JSON.stringify(args));
 
   switch (name) {
     case "puppeteer_navigate":
@@ -472,8 +490,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) =>
 );
 
 async function runServer() {
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  console.log("🚀 Launching Server...");
+  // const transport = new StdioServerTransport();
+  // const transport = new StreamableHTTPServerTransport({ port: 4002 });
+  const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: () => "123" });
+  // await server.connect(transport);
+  await server.serve(transport);
 }
 
 runServer().catch(console.error);
